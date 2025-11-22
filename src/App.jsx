@@ -13,6 +13,8 @@ import ImportCsvPage from './pages/ImportCsvPage';
 import ForgotPasswordPage from './pages/ForgotPasswordPage';
 import ResetPasswordPage from './pages/ResetPasswordPage';
 
+import ProfilePage from './pages/ProfilePage';
+
 function App() {
   return (
     <Routes>
@@ -40,9 +42,10 @@ function App() {
           path="/importar-csv"
           element={<ImportCsvPage />}
         />
+
         <Route 
           path="/perfil" 
-          element={<div>Página de Perfil (WIP)</div>}
+          element={<ProfilePage />}
         />
         
         </Route>

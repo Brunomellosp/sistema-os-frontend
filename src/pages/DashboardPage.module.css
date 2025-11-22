@@ -297,3 +297,14 @@
     color: white;
     border-color: #4F46E5;
 }
+
+.paginationDots {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    color: #718096;
+    font-weight: bold;
+    user-select: none;
+}

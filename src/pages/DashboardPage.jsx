@@ -5,7 +5,8 @@ import api from '../services/api';
 import { format } from 'date-fns';
 import {
     FiPlus, FiEdit, FiTrash2, FiUpload, FiX,
-    FiChevronLeft, FiChevronRight, FiCheckCircle, FiAlertTriangle
+    FiChevronLeft, FiChevronRight, FiCheckCircle, FiAlertTriangle,
+    FiUser
 } from 'react-icons/fi';
 
 import styles from './DashboardPage.module.css';
@@ -13,7 +14,14 @@ import styles from './DashboardPage.module.css';
 const TYPE_OPTIONS = [
     { value: 'administrative', label: 'Administrativa' },
     { value: 'installation', label: 'Instalação' },
-    // ... TODO: adicionar todos os outros tipos
+    { value: 'preventive_maintenance', label: 'Manutenção Preventiva' },
+    { value: 'corrective_maintenance', label: 'Manutenção Corretiva' },
+    { value: 'predictive_maintenance', label: 'Manutenção Preditiva' },
+    { value: 'inspection', label: 'Vistoria' },
+    { value: 'technical_assistance', label: 'Assistência Técnica' },
+    { value: 'work_safety', label: 'Segurança do Trabalho' },
+    { value: 'budget', label: 'Orçamento' },
+    { value: 'events', label: 'Eventos' },
 ];
 
 const STATUS_OPTIONS = [
@@ -52,7 +60,6 @@ function DashboardPage() {
             const params = {
                 page: pagination.page,
                 page_size: pagination.page_size,
-                ordering: '-created_at',
 
                 search: filters.search || undefined,
                 status: filters.status || undefined,
@@ -118,11 +125,17 @@ function DashboardPage() {
             <header className={styles.header}>
                 <h2>Ordens de Serviço</h2>
                 <div className={styles.headerActions}>
+                    
+                    <Link to="/perfil" className={styles.csvButton}>
+                        <FiUser /> Meu Perfil
+                    </Link>
+
                     {user && (
                         <button className={styles.csvButton} onClick={() => navigate('/importar-csv')}>
                             <FiUpload /> Importar CSV
                         </button>
                     )}
+
                     <Link to="/ordens-servico/novo" className={styles.primaryButton}>
                         <FiPlus /> Nova O.S
                     </Link>
@@ -280,34 +293,91 @@ const SlaStatus = ({ sla }) => {
     );
 };
 
+const returnPaginationRange = (totalPage, page, siblings) => {
+    const totalPageNoInArray = 7 + siblings;
+
+    if (totalPageNoInArray >= totalPage) {
+        return [...Array(totalPage).keys()].map(n => n + 1);
+    }
+
+    const leftSiblingsIndex = Math.max(page - siblings, 1);
+    const rightSiblingsIndex = Math.min(page + siblings, totalPage);
+
+    const showLeftDots = leftSiblingsIndex > 2;
+    const showRightDots = rightSiblingsIndex < totalPage - 2;
+
+    if (!showLeftDots && showRightDots) {
+        const leftItemCount = 3 + 2 * siblings;
+        const leftRange = [...Array(leftItemCount).keys()].map(n => n + 1);
+        return [...leftRange, '...', totalPage];
+    }
+
+    if (showLeftDots && !showRightDots) {
+        const rightItemCount = 3 + 2 * siblings;
+        const rightRange = [...Array(rightItemCount).keys()].map(n => totalPage - n).reverse();
+        return [1, '...', ...rightRange];
+    }
+
+    if (showLeftDots && showRightDots) {
+        const middleRange = [...Array(rightSiblingsIndex - leftSiblingsIndex + 1).keys()].map(n => leftSiblingsIndex + n);
+        return [1, '...', ...middleRange, '...', totalPage];
+    }
+};
+
 const PaginationFooter = ({ pagination, onPageChange }) => {
     const { count, page, page_size } = pagination;
+
     if (count === 0) return null;
 
     const totalPages = Math.ceil(count / page_size);
     const startItem = (page - 1) * page_size + 1;
     const endItem = Math.min(page * page_size, count);
 
+    const arrayPages = returnPaginationRange(totalPages, page, 1);
+
     return (
         <footer className={styles.footer}>
             <span className={styles.pageInfo}>
                 Mostrando {startItem} a {endItem} de {count} resultados
             </span>
-            <nav className={styles.pagination}>
-                <button onClick={() => onPageChange(page - 1)} disabled={page === 1}>
+
+            <nav className={styles.pagination} aria-label="Navegação de paginação">
+                <button
+                    onClick={() => onPageChange(page - 1)}
+                    disabled={page === 1}
+                    aria-label="Página anterior"
+                    title="Anterior"
+                >
                     <FiChevronLeft />
                 </button>
-                {/* TODO: lógica simples de páginas que pode ser melhorada */}
-                {[...Array(totalPages).keys()].map(n => (
-                    <button
-                        key={n + 1}
-                        className={page === n + 1 ? styles.active : ''}
-                        onClick={() => onPageChange(n + 1)}
-                    >
-                        {n + 1}
-                    </button>
-                ))}
-                <button onClick={() => onPageChange(page + 1)} disabled={page === totalPages}>
+
+                {arrayPages.map((value, idx) => {
+                    if (value === '...') {
+                        return (
+                            <span key={`dots-${idx}`} className={styles.paginationDots}>
+                                &#8230;
+                            </span>
+                        );
+                    }
+
+                    return (
+                        <button
+                            key={value}
+                            className={page === value ? styles.active : ''}
+                            onClick={() => onPageChange(value)}
+                            aria-current={page === value ? 'page' : undefined}
+                        >
+                            {value}
+                        </button>
+                    );
+                })}
+
+                <button
+                    onClick={() => onPageChange(page + 1)}
+                    disabled={page === totalPages}
+                    aria-label="Próxima página"
+                    title="Próximo"
+                >
                     <FiChevronRight />
                 </button>
             </nav>
