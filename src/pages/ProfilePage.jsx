@@ -1,15 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { Link } from 'react-router-dom';
 import api from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import { 
-  FiUser, FiMail, FiLock, FiSave, FiArrowLeft, FiShield, FiLogOut
+  FiUser, FiMail, FiLock, FiSave, FiArrowLeft, FiShield, FiLogOut, FiTrash2
 } from 'react-icons/fi';
+
+import { Link, useNavigate } from 'react-router-dom';
 
 import styles from './ProfilePage.module.css';
 
 function ProfilePage() {
+  const navigate = useNavigate();
+
   const { 
     register: registerProfile, 
     handleSubmit: handleSubmitProfile, 
@@ -31,7 +34,7 @@ function ProfilePage() {
   useEffect(() => {
     async function loadProfile() {
       try {
-        const response = await api.get('/auth/user/');
+        const response = await api.get('/auth/me/');
         resetProfile({
           username: response.data.username,
           email: response.data.email,
@@ -96,6 +99,39 @@ function ProfilePage() {
     }
   };
 
+  const handleDeleteAccount = async () => {
+    if (!window.confirm("Tem certeza que deseja apagar a conta?")) {
+      return
+    }
+    
+    try {
+      const response = await api.delete('/auth/me/');
+
+      if (response.status === 204) {
+        alert("Sua conta foi apagada");
+        logout();
+        navigate('/');
+        return;
+      }
+
+      alert("Não foi possivel excluir a conta");
+    } catch (error) {
+      console.error("Erro ao deletar conta", error);
+
+      const detail = error?.response?.data?.detail;
+      if (detail) {
+        alert(detail);
+      } else {
+        alert("Erro inesperado ao excluir conta");
+      }
+
+      if (error?.response?.status === 401) {
+        logout();
+        navigate('/');
+      }
+    }
+  }
+ 
   const handleLogout = () => {
     if (window.confirm("Tem certeza que deseja sair do sistema?")) {
       logout();
@@ -159,6 +195,28 @@ function ProfilePage() {
             <FiShield className={styles.cardIcon} />
             <h3>Alterar Senha</h3>
           </div>
+
+          <section className={`${styles.card} ${styles.dangerCard}`}>
+            <div className={styles.cardHeader}>
+              <FiTrash2 className={styles.cardIcon} />
+              <h3>Excluir Conta</h3>
+          </div>
+
+            <p className={styles.dangerText}>
+              Esta ação é irreversível. Sua conta e dados associados poderão ser removidos
+              de forma permanente. Faça isso apenas se tiver certeza.
+            </p>
+
+            <button
+              type="button"
+              onClick={handleDeleteAccount}
+              className={styles.dangerButton}
+              disabled={user?.role === 'ADMIN'}
+            >
+              <FiTrash2 />
+              {user?.role === 'ADMIN' ? 'Conta ADMIN não pode ser excluída' : 'Excluir minha conta'}
+            </button>
+          </section>
           
           <form onSubmit={handleSubmitPass(onSubmitPassword)}>
             <InputGroup label="Senha Atual" error={passErrors.old_password}>

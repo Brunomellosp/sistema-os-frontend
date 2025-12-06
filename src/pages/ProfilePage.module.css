@@ -172,3 +172,36 @@
   color: #4F46E5;
 }
 .primaryButton.outline:hover { background-color: #eef2ff; }
+
+.dangerCard {
+  border: 1px solid #fca5a5;
+  background: #fef2f2;
+}
+
+.dangerText {
+  font-size: 0.9rem;
+  color: #7f1d1d;
+  margin-bottom: 1rem;
+}
+
+.dangerButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: #dc2626;
+  color: #fff;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.dangerButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.dangerButton:hover:not(:disabled) {
+  background: #b91c1c;
+}
