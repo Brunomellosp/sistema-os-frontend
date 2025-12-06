@@ -1,3 +1,4 @@
+// App.jsx
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 
@@ -15,6 +16,8 @@ import ResetPasswordPage from './pages/ResetPasswordPage';
 
 import ProfilePage from './pages/ProfilePage';
 
+import MainLayout from './components/layout/MainLayout';
+
 function App() {
   return (
     <Routes>
@@ -26,29 +29,31 @@ function App() {
 
       {/* rotas privadas */}
       <Route element={<PrivateRoute />}>
-        <Route path="/" element={<DashboardPage />} />
-        
-        <Route 
-          path="/ordens-servico/novo" 
-          element={<CreateOrdemServico />} 
-        />
-        
-        <Route
-          path="/ordens-servico/editar/:id"
-          element={<EditOrdemServico />}
-        />
-        
-        <Route
-          path="/importar-csv"
-          element={<ImportCsvPage />}
-        />
+        {/* layout com footer para todas as privadas */}
+        <Route element={<MainLayout />}>
+          <Route path="/" element={<DashboardPage />} />
 
-        <Route 
-          path="/perfil" 
-          element={<ProfilePage />}
-        />
-        
+          <Route
+            path="/ordens-servico/novo"
+            element={<CreateOrdemServico />}
+          />
+
+          <Route
+            path="/ordens-servico/editar/:id"
+            element={<EditOrdemServico />}
+          />
+
+          <Route
+            path="/importar-csv"
+            element={<ImportCsvPage />}
+          />
+
+          <Route
+            path="/perfil"
+            element={<ProfilePage />}
+          />
         </Route>
+      </Route>
     </Routes>
   );
 }

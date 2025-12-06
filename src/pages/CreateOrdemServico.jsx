@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import api from '../services/api';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom'; // 👈 Link adicionado
 import {
     FiCheckCircle,
     FiInfo,
     FiClock,
-    FiActivity
+    FiActivity,
+    FiArrowLeft,          // 👈 ícone adicionado
 } from 'react-icons/fi';
 
 import styles from './CreateOrdemServico.module.css';
@@ -72,7 +73,6 @@ function CreateOrdemServico() {
         setPrazoCalculado(slaPrazos[selectedPriority] || 'Selecione a prioridade');
     }, [selectedPriority]);
 
-
     const onSubmit = async (data) => {
         try {
             await api.post('/ordens-servico/', data);
@@ -90,6 +90,11 @@ function CreateOrdemServico() {
             {/* 1. cabeçalho */}
             <header className={styles.header}>
                 <div>
+                    {/* 👇 Botão de voltar */}
+                    <Link to="/" className={styles.backButton}>
+                        <FiArrowLeft /> Voltar ao Dashboard
+                    </Link>
+
                     <h2>Ordem de Serviço</h2>
                     <p>Cadastro e edição de ordens de serviço</p>
                 </div>
