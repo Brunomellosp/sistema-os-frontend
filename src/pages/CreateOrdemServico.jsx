@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
+import { useAuth } from '../context/AuthContext'; 
 import api from '../services/api';
-import { useNavigate, Link } from 'react-router-dom'; // 👈 Link adicionado
-import {
-    FiCheckCircle,
-    FiInfo,
-    FiClock,
-    FiActivity,
-    FiArrowLeft,          // 👈 ícone adicionado
+import { useNavigate, Link } from 'react-router-dom';
+import { 
+  FiInfo, 
+  FiClock, 
+  FiActivity,
+  FiArrowLeft,
+  FiLogOut,
+  FiCheckCircle
 } from 'react-icons/fi';
 
 import styles from './CreateOrdemServico.module.css';
@@ -64,6 +66,7 @@ const slaPrazos = {
 
 function CreateOrdemServico() {
     const { register, handleSubmit, watch, formState: { errors } } = useForm();
+    const { logout } = useAuth();
     const navigate = useNavigate();
 
     const selectedPriority = watch('priority');
@@ -72,6 +75,7 @@ function CreateOrdemServico() {
     useEffect(() => {
         setPrazoCalculado(slaPrazos[selectedPriority] || 'Selecione a prioridade');
     }, [selectedPriority]);
+
 
     const onSubmit = async (data) => {
         try {
@@ -84,23 +88,32 @@ function CreateOrdemServico() {
         }
     };
 
+
+    const handleLogout = () => {
+      if (window.confirm("Tem certeza que deseja sair do sistema?")) {
+        logout();
+        navigate('/login');
+      }
+    };
+
     return (
         <div className={styles.pageContainer}>
 
             {/* 1. cabeçalho */}
             <header className={styles.header}>
-                <div>
-                    {/* 👇 Botão de voltar */}
-                    <Link to="/" className={styles.backButton}>
-                        <FiArrowLeft /> Voltar ao Dashboard
-                    </Link>
-
-                    <h2>Ordem de Serviço</h2>
-                    <p>Cadastro e edição de ordens de serviço</p>
-                </div>
-                <div className={`${styles.statusBadge} ${styles.online}`}>
-                    <FiCheckCircle /> Sistema Online
-                </div>
+              <div>
+                <h2>Ordem de Serviço</h2>
+                <p>Cadastro e edição de ordens de serviço</p>
+              </div>
+              
+              <div className={styles.headerActions}>
+                  <button onClick={handleLogout} className={styles.logoutButton}>
+                      <FiLogOut /> Sair
+                  </button>
+                  <Link to="/" className={styles.backButton}>
+                      <FiArrowLeft /> Voltar ao Dashboard
+                  </Link>
+              </div>
             </header>
 
             {/* 2. layout do formulário (2 colunas) */}

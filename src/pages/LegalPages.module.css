@@ -1,0 +1,90 @@
+.pageContainer {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 3rem 1.5rem;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  color: #333;
+  background-color: #f8f9fa;
+  min-height: 100vh;
+}
+
+.documentCard {
+  background: #ffffff;
+  padding: 3rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  border: 1px solid #e2e8f0;
+}
+
+.header {
+  border-bottom: 2px solid #edf2f7;
+  padding-bottom: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.header h1 {
+  margin: 0;
+  color: #1a202c;
+  font-size: 2rem;
+}
+
+.lastUpdated {
+  color: #718096;
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+  display: block;
+}
+
+.content h2 {
+  color: #2d3748;
+  margin-top: 2rem;
+  font-size: 1.4rem;
+  border-left: 4px solid #4F46E5;
+  padding-left: 1rem;
+}
+
+.content h3 {
+  color: #4a5568;
+  margin-top: 1.5rem;
+  font-size: 1.1rem;
+}
+
+.content p {
+  line-height: 1.7;
+  color: #4a5568;
+  margin-bottom: 1rem;
+  text-align: justify;
+}
+
+.content ul {
+  margin-bottom: 1rem;
+  padding-left: 1.5rem;
+}
+
+.content li {
+  margin-bottom: 0.5rem;
+  color: #4a5568;
+  line-height: 1.6;
+}
+
+.footer {
+  margin-top: 3rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #edf2f7;
+  text-align: center;
+}
+
+.backButton {
+  display: inline-block;
+  padding: 0.75rem 1.5rem;
+  background-color: #4F46E5;
+  color: white;
+  text-decoration: none;
+  border-radius: 6px;
+  font-weight: 600;
+  transition: background-color 0.2s;
+}
+
+.backButton:hover {
+  background-color: #4338CA;
+}

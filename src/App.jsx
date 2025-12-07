@@ -1,4 +1,3 @@
-// App.jsx
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 
@@ -16,44 +15,45 @@ import ResetPasswordPage from './pages/ResetPasswordPage';
 
 import ProfilePage from './pages/ProfilePage';
 
-import MainLayout from './components/layout/MainLayout';
+import TermsOfServicePage from './pages/TermsOfServicePage';
+import PrivacyPolicyPage from './pages/PrivacyPolicyPage';
 
 function App() {
   return (
     <Routes>
       {/* rotas públicas */}
       <Route path="/login" element={<LoginPage />} />
-      <Route path="/register" element={<RegisterPage />} />
+      {/* <Route path="/register" element={<RegisterPage />} /> */}
       <Route path="/forgot-password" element={<ForgotPasswordPage />} />
       <Route path="/resetar-senha" element={<ResetPasswordPage />} />
+      <Route path="/termos-de-servico" element={<TermsOfServicePage />} />
+      <Route path="/privacidade" element={<PrivacyPolicyPage />} />
 
       {/* rotas privadas */}
       <Route element={<PrivateRoute />}>
-        {/* layout com footer para todas as privadas */}
-        <Route element={<MainLayout />}>
-          <Route path="/" element={<DashboardPage />} />
+        <Route path="/" element={<DashboardPage />} />
+        
+        <Route 
+          path="/ordens-servico/novo" 
+          element={<CreateOrdemServico />} 
+        />
+        
+        <Route
+          path="/ordens-servico/editar/:id"
+          element={<EditOrdemServico />}
+        />
+        
+        <Route
+          path="/importar-csv"
+          element={<ImportCsvPage />}
+        />
 
-          <Route
-            path="/ordens-servico/novo"
-            element={<CreateOrdemServico />}
-          />
-
-          <Route
-            path="/ordens-servico/editar/:id"
-            element={<EditOrdemServico />}
-          />
-
-          <Route
-            path="/importar-csv"
-            element={<ImportCsvPage />}
-          />
-
-          <Route
-            path="/perfil"
-            element={<ProfilePage />}
-          />
+        <Route 
+          path="/perfil" 
+          element={<ProfilePage />}
+        />
+        
         </Route>
-      </Route>
     </Routes>
   );
 }

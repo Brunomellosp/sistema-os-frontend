@@ -1,17 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import api from '../services/api';
-import { useAuth } from '../context/AuthContext';
-import { 
-  FiUser, FiMail, FiLock, FiSave, FiArrowLeft, FiShield, FiLogOut, FiTrash2
-} from 'react-icons/fi';
-
 import { Link, useNavigate } from 'react-router-dom';
+import api from '../services/api';
+import { useAuth } from '../context/AuthContext'; 
+import { 
+  FiUser, FiMail, FiLock, FiSave, FiArrowLeft, FiShield, FiLogOut 
+} from 'react-icons/fi';
 
 import styles from './ProfilePage.module.css';
 
 function ProfilePage() {
   const navigate = useNavigate();
+  const { user, logout } = useAuth();
 
   const { 
     register: registerProfile, 
@@ -29,12 +29,10 @@ function ProfilePage() {
     formState: { errors: passErrors, isSubmitting: isSavingPass } 
   } = useForm();
 
-  const { user, logout } = useAuth(); 
-
   useEffect(() => {
     async function loadProfile() {
       try {
-        const response = await api.get('/auth/me/');
+        const response = await api.get('/auth/user/');
         resetProfile({
           username: response.data.username,
           email: response.data.email,
@@ -55,7 +53,6 @@ function ProfilePage() {
       alert("Perfil atualizado com sucesso!");
     } catch (error) {
       console.error("Erro ao atualizar perfil:", error);
-      
       if (error.response && error.response.data) {
         Object.keys(error.response.data).forEach((field) => {
           setProfileError(field, { 
@@ -85,7 +82,6 @@ function ProfilePage() {
       resetPass();
     } catch (error) {
       console.error("Erro ao alterar senha:", error);
-
       if (error.response && error.response.data) {
         Object.keys(error.response.data).forEach((field) => {
           setPassError(field, { 
@@ -99,49 +95,17 @@ function ProfilePage() {
     }
   };
 
-  const handleDeleteAccount = async () => {
-    if (!window.confirm("Tem certeza que deseja apagar a conta?")) {
-      return
-    }
-    
-    try {
-      const response = await api.delete('/auth/me/');
-
-      if (response.status === 204) {
-        alert("Sua conta foi apagada");
-        logout();
-        navigate('/');
-        return;
-      }
-
-      alert("Não foi possivel excluir a conta");
-    } catch (error) {
-      console.error("Erro ao deletar conta", error);
-
-      const detail = error?.response?.data?.detail;
-      if (detail) {
-        alert(detail);
-      } else {
-        alert("Erro inesperado ao excluir conta");
-      }
-
-      if (error?.response?.status === 401) {
-        logout();
-        navigate('/');
-      }
-    }
-  }
- 
   const handleLogout = () => {
     if (window.confirm("Tem certeza que deseja sair do sistema?")) {
       logout();
       navigate('/login');
     }
-  }
+  };
 
   return (
     <div className={styles.pageContainer}>
       
+      {/* cabeçalho */}
       <header className={styles.header}>
         <div>
           <h2>Minha Conta</h2>
@@ -149,7 +113,6 @@ function ProfilePage() {
         </div>
         
         <div className={styles.headerActions}>
-          
           <button onClick={handleLogout} className={styles.logoutButton}>
             <FiLogOut /> Sair
           </button>
@@ -162,6 +125,7 @@ function ProfilePage() {
 
       <div className={styles.contentGrid}>
         
+        {/* dados pessoais */}
         <section className={styles.card}>
           <div className={styles.cardHeader}>
             <FiUser className={styles.cardIcon} />
@@ -169,7 +133,6 @@ function ProfilePage() {
           </div>
           
           <form onSubmit={handleSubmitProfile(onSubmitProfile)}>
-
             <InputGroup label="E-mail" error={profileErrors.email}>
               <div className={styles.inputWithIcon}>
                 <FiMail />
@@ -190,33 +153,12 @@ function ProfilePage() {
           </form>
         </section>
 
+        {/* senha */}
         <section className={styles.card}>
           <div className={styles.cardHeader}>
             <FiShield className={styles.cardIcon} />
             <h3>Alterar Senha</h3>
           </div>
-
-          <section className={`${styles.card} ${styles.dangerCard}`}>
-            <div className={styles.cardHeader}>
-              <FiTrash2 className={styles.cardIcon} />
-              <h3>Excluir Conta</h3>
-          </div>
-
-            <p className={styles.dangerText}>
-              Esta ação é irreversível. Sua conta e dados associados poderão ser removidos
-              de forma permanente. Faça isso apenas se tiver certeza.
-            </p>
-
-            <button
-              type="button"
-              onClick={handleDeleteAccount}
-              className={styles.dangerButton}
-              disabled={user?.role === 'ADMIN'}
-            >
-              <FiTrash2 />
-              {user?.role === 'ADMIN' ? 'Conta ADMIN não pode ser excluída' : 'Excluir minha conta'}
-            </button>
-          </section>
           
           <form onSubmit={handleSubmitPass(onSubmitPassword)}>
             <InputGroup label="Senha Atual" error={passErrors.old_password}>
@@ -261,6 +203,13 @@ function ProfilePage() {
         </section>
 
       </div>
+
+      <footer className={styles.legalFooter}>
+        <Link to="/termos-de-servico" target="_blank" rel="noopener noreferrer">Termos de Serviço</Link>
+        <span className={styles.separator}>•</span>
+        <Link to="/privacidade" target="_blank" rel="noopener noreferrer">Política de Privacidade</Link>
+      </footer>
+
     </div>
   );
 }

@@ -19,13 +19,13 @@ function RegisterPage() {
 
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
-
   const [isLoading, setIsLoading] = useState(false);
 
   const onSubmit = async (data) => {
     setIsLoading(true);
     try {
       await api.post('/auth/register/', data);
+      
       alert('Usuário cadastrado com sucesso!');
       navigate('/login');
     } catch (error) {
@@ -59,7 +59,7 @@ function RegisterPage() {
         {/* campo usuário (username) */}
         <div className={styles.inputGroup}>
           <label htmlFor="username">Usuário</label>
-          <div className={styles.inputField}>
+          <div className={`${styles.inputField} ${errors.username ? styles.errorBorder : ''}`}>
             <FiUser className={styles.icon} />
             <input
               id="username"
@@ -88,7 +88,7 @@ function RegisterPage() {
         {/* campo email (email) */}
         <div className={styles.inputGroup}>
           <label htmlFor="email">Email</label>
-          <div className={styles.inputField}>
+          <div className={`${styles.inputField} ${errors.email ? styles.errorBorder : ''}`}>
             <FiAtSign className={styles.icon} />
             <input
               id="email"
@@ -109,7 +109,7 @@ function RegisterPage() {
         {/* campo senha (password) */}
         <div className={styles.inputGroup}>
           <label htmlFor="password">Senha</label>
-          <div className={styles.inputField}>
+          <div className={`${styles.inputField} ${errors.password ? styles.errorBorder : ''}`}>
             <FiLock className={styles.icon} />
             <input
               id="password"
@@ -140,6 +140,23 @@ function RegisterPage() {
             )}
           </div>
           {errors.password && <span className={styles.errorMessage}>{errors.password.message}</span>}
+        </div>
+
+        {/* --- termo de uso --- */}
+        <div className={styles.termsGroup}>
+          <div className={styles.checkboxContainer}>
+            <input
+              type="checkbox"
+              id="terms"
+              {...register('terms', { 
+                required: 'Você precisa aceitar os termos para continuar.' 
+              })}
+            />
+            <label htmlFor="terms">
+              Li e aceito os <Link to="/termos-de-servico" target="_blank">Termos de Serviço</Link> e a <Link to="/privacidade" target="_blank">Política de Privacidade</Link>.
+            </label>
+          </div>
+          {errors.terms && <span className={styles.errorMessage}>{errors.terms.message}</span>}
         </div>
 
         {/* botão de cadastrar (submit) */}

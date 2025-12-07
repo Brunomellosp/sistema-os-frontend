@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext'; 
 import api from '../services/api';
-import { FiUploadCloud, FiFile, FiArrowLeft } from 'react-icons/fi';
+import { FiUploadCloud, FiFile, FiArrowLeft, FiLogOut } from 'react-icons/fi';
 
 import styles from './ImportCsvPage.module.css';
 
@@ -9,6 +10,7 @@ function ImportCsvPage() {
     const [selectedFile, setSelectedFile] = useState(null);
     const [isUploading, setIsUploading] = useState(false);
     const navigate = useNavigate();
+    const { logout } = useAuth();
 
     const handleFileChange = (e) => {
         if (e.target.files && e.target.files[0]) {
@@ -27,6 +29,13 @@ function ImportCsvPage() {
     const handleDragOver = (e) => {
         e.preventDefault();
         e.stopPropagation();
+    };
+
+    const handleLogout = () => {
+      if (window.confirm("Tem certeza que deseja sair do sistema?")) {
+        logout();
+        navigate('/login');
+      }
     };
 
     const handleSubmit = async (e) => {
@@ -61,11 +70,19 @@ function ImportCsvPage() {
 
     return (
         <div className={styles.pageContainer}>
-            <header className={styles.header}>
-                <h2>Importar Ordens de Serviço (CSV)</h2>
-                <Link to="/" className={styles.backButton}>
-                    <FiArrowLeft /> Voltar ao Dashboard
-                </Link>
+              <header className={styles.header}>
+              <div>
+                  <h2>Importar Ordens de Serviço (CSV)</h2>
+              </div>
+              
+              <div className={styles.headerActions}>
+                  <button onClick={handleLogout} className={styles.logoutButton}>
+                      <FiLogOut /> Sair
+                  </button>
+                  <Link to="/" className={styles.backButton}>
+                      <FiArrowLeft /> Voltar ao Dashboard
+                  </Link>
+              </div>
             </header>
 
             <div className={styles.card}>

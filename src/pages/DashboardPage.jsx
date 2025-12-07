@@ -70,19 +70,10 @@ function DashboardPage() {
 
             const response = await api.get('/ordens-servico/', { params });
 
-            const list = Array.isArray(response.data?.results)
-                ? response.data.results
-                : Array.isArray(response.data)
-                ? response.data
-                : [];
-
-            setOrdens(list);
-
+            setOrdens(response.data.results);
             setPagination(prev => ({
                 ...prev,
-                count: typeof response.data?.count === 'number'
-                    ? response.data.count
-                    : list.length,
+                count: response.data.count,
             }));
 
         } catch (error) {
@@ -212,20 +203,16 @@ function DashboardPage() {
                     </thead>
                     <tbody>
                         {isLoading ? (
-                            <tr>
-                                <td colSpan="7" className={styles.loading}>Carregando...</td>
-                            </tr>
-                        ) : (ordens?.length ?? 0) === 0 ? (
-                            <tr>
-                                <td colSpan="7" className={styles.empty}>Nenhuma ordem de serviço encontrada.</td>
-                            </tr>
+                            <tr><td colSpan="7" className={styles.loading}>Carregando...</td></tr>
+                        ) : ordens.length === 0 ? (
+                            <tr><td colSpan="7" className={styles.empty}>Nenhuma ordem de serviço encontrada.</td></tr>
                         ) : (
-                            (ordens || []).map(ordem => (
+                            ordens.map(ordem => (
                                 <tr key={ordem.id}>
                                     <td>{ordem.so_number}</td>
-                                    <td><Badge text={ordem.type_display || ordem.type} type={ordem.type} /></td>
-                                    <td><Badge text={ordem.status_display || ordem.status} type={ordem.status} /></td>
-                                    <td>{ordem.created_at ? format(new Date(ordem.created_at), 'dd/MM/yyyy') : '-'}</td>
+                                    <td><Badge text={ordem.type_display} type={ordem.type} /></td>
+                                    <td><Badge text={ordem.status_display} type={ordem.status} /></td>
+                                    <td>{format(new Date(ordem.created_at), 'dd/MM/yyyy')}</td>
                                     <td>{ordem.recipient_name}</td>
                                     <td><SlaStatus sla={ordem} /></td>
                                     <td className={styles.actions}>
@@ -335,25 +322,18 @@ const returnPaginationRange = (totalPage, page, siblings) => {
         const middleRange = [...Array(rightSiblingsIndex - leftSiblingsIndex + 1).keys()].map(n => leftSiblingsIndex + n);
         return [1, '...', ...middleRange, '...', totalPage];
     }
-
-    return [...Array(totalPage).keys()].map(n => n + 1)
 };
 
 const PaginationFooter = ({ pagination, onPageChange }) => {
-    if (!pagination) return null;
-
     const { count, page, page_size } = pagination;
 
-    if (!count || count === 0) return null;
+    if (count === 0) return null;
 
     const totalPages = Math.ceil(count / page_size);
-    if (!totalPages || totalPages < 1) return null;
-
     const startItem = (page - 1) * page_size + 1;
     const endItem = Math.min(page * page_size, count);
 
-    const arrayPagesRaw = returnPaginationRange(totalPages, page, 1);
-    const arrayPages = Array.isArray(arrayPagesRaw) ? arrayPagesRaw : [];
+    const arrayPages = returnPaginationRange(totalPages, page, 1);
 
     return (
         <footer className={styles.footer}>

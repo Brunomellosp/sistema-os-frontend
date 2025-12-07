@@ -120,10 +120,7 @@ function LoginPage() {
         </button>
 
         {/* link de cadastro */}
-        <div className={styles.signupLink}>
-          Não possui conta?{' '}
-          <Link to="/register">Cadastre-se</Link>
-        </div>
+        {/* <div className={styles.signupLink}> Não possui conta?{' '} <Link to="/register">Cadastre-se</Link> </div> */}
       </form>
 
       <footer className={styles.footer}>

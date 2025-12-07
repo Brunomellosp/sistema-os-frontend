@@ -13,14 +13,14 @@
   margin-bottom: 2rem;
 }
 
+.header h2 { margin: 0 0 0.5rem 0; color: #1a202c; }
+.header p { margin: 0; color: #718096; font-size: 0.9rem; }
+
 .headerActions {
   display: flex;
   gap: 1rem;
   align-items: center;
 }
-
-.header h2 { margin: 0 0 0.5rem 0; color: #1a202c; }
-.header p { margin: 0; color: #718096; font-size: 0.9rem; }
 
 .logoutButton {
   display: flex;
@@ -59,6 +59,7 @@
   display: grid;
   grid-template-columns: 1fr;
   gap: 2rem;
+  margin-bottom: 3rem;
 }
 
 @media (min-width: 768px) {
@@ -173,35 +174,29 @@
 }
 .primaryButton.outline:hover { background-color: #eef2ff; }
 
-.dangerCard {
-  border: 1px solid #fca5a5;
-  background: #fef2f2;
-}
-
-.dangerText {
+.legalFooter {
+  text-align: center;
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #edf2f7;
+  color: #718096;
   font-size: 0.9rem;
-  color: #7f1d1d;
-  margin-bottom: 1rem;
 }
 
-.dangerButton {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  background: #dc2626;
-  color: #fff;
-  border: none;
-  padding: 0.6rem 1.2rem;
-  border-radius: 0.5rem;
-  cursor: pointer;
-  font-weight: 600;
+.legalFooter a {
+  color: #718096;
+  text-decoration: none;
+  margin: 0 0.5rem;
+  transition: color 0.2s;
 }
 
-.dangerButton:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
+.legalFooter a:hover {
+  color: #4F46E5;
+  text-decoration: underline;
 }
 
-.dangerButton:hover:not(:disabled) {
-  background: #b91c1c;
+.separator {
+  color: #cbd5e0;
 }
+
+
